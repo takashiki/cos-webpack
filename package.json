@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lyfeyaj/qn-webpack.git"
+    "url": "git+https://github.com/takashiki/cos-webpack.git"
   },
   "keywords": [
     "qcloud",
