@@ -1,0 +1,31 @@
+{
+  "name": "cos-webpack",
+  "version": "1.0.0",
+  "description": "Qcloud cos webpack plugin",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyfeyaj/qn-webpack.git"
+  },
+  "keywords": [
+    "qcloud",
+    "cos",
+    "webpack",
+    "plugin"
+  ],
+  "author": "takashiki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/takashiki/cos-webpack/issues"
+  },
+  "homepage": "https://github.com/takashiki/cos-webpack#readme",
+  "dependencies": {
+    "cos-nodejs-sdk-v5": "^2.2.4",
+    "lodash.isregexp": "^4.0.1",
+    "ora": "^1.3.0",
+    "path": "^0.12.7"
+  }
+}
