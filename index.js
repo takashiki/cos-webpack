@@ -99,6 +99,7 @@ module.exports = class CosPlugin {
             // Perform upload to cos
             const performUpload = function (fileName) {
                 let file = assets[fileName] || {};
+                fileName = 'js/' + fileName;
                 let key = path.posix.join(uploadPath, fileName);
 
                 return new Promise((resolve, reject) => {
