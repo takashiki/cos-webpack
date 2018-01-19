@@ -45,6 +45,7 @@ module.exports = class CosPlugin {
     apply(compiler) {
         compiler.plugin('after-emit', (compilation, callback) => {
 
+            let basePath = path.basename(compiler.outputPath);
             let assets = compilation.assets;
             let hash = compilation.hash;
             let uploadPath = this.options.path || '[hash]';
@@ -99,7 +100,7 @@ module.exports = class CosPlugin {
             // Perform upload to cos
             const performUpload = function (fileName) {
                 let file = assets[fileName] || {};
-                fileName = 'js/' + fileName;
+                fileName = basePath + '/' + fileName;
                 let key = path.posix.join(uploadPath, fileName);
 
                 return new Promise((resolve, reject) => {

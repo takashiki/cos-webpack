@@ -1,6 +1,6 @@
 {
   "name": "cos-webpack",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Qcloud cos webpack plugin",
   "main": "index.js",
   "scripts": {
