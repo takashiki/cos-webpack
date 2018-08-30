@@ -103,7 +103,7 @@ module.exports = class CosPlugin {
             // Perform upload to cos
             const performUpload = function(fileName) {
                 let file = assets[fileName] || {};
-                fileName = basePath + "/" + fileName;
+                fileName = basePath + "/" + fileName.replace(/\\/g, '/');
                 let key = path.posix.join(uploadPath, fileName);
 
                 return new Promise((resolve, reject) => {
