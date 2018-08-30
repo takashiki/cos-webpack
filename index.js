@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require('fs');
 const COS = require("cos-nodejs-sdk-v5");
 const path = require("path");
 const ora = require("ora");
@@ -112,7 +113,8 @@ module.exports = class CosPlugin {
                             Bucket: bucket,
                             Region: region,
                             Key: key,
-                            Body: file.existsAt
+                            Body: fs.createReadStream(file.existsAt),
+                            ContentLength: fs.statSync(file.existsAt).size
                         },
                         function(err, body) {
                             uploadedFiles++;
