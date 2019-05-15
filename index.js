@@ -1,22 +1,22 @@
-"use strict";
+'use strict';
 
 const fs = require('fs');
-const COS = require("cos-nodejs-sdk-v5");
-const path = require("path");
-const ora = require("ora");
-const isRegExp = require("lodash.isregexp");
+const COS = require('cos-nodejs-sdk-v5');
+const path = require('path');
+const ora = require('ora');
+const isRegExp = require('lodash.isregexp');
 
 // Constants
 const REGEXP_HASH = /\[hash(?::(\d+))?\]/gi;
 
 // Uploading progress tip
 const tip = (uploaded, total) => {
-    let percentage = Math.round(uploaded / total * 100);
-    return `Uploading to Qcloud Cos: ${percentage}% ${uploaded}/${total} files uploaded`;
+    let percentage = total == 0 ? 0 : Math.round((uploaded / total) * 100);
+    return `Uploading to Tencent COS: ${percentage == 0 ? '' : percentage + '% '}${uploaded}/${total} files uploaded`;
 };
 
 // Replace path variable by hash with length
-const withHashLength = (replacer) => {
+const withHashLength = replacer => {
     return function(_, hashLength) {
         const length = hashLength && parseInt(hashLength, 10);
         const hash = replacer.apply(this, arguments);
@@ -31,7 +31,7 @@ const getReplacer = (value, allowEmpty) => {
         const input = arguments[arguments.length - 1];
         if (value === null || value === undefined) {
             if (!allowEmpty) throw new Error(`Path variable ${match} not implemented in this context of qn-webpack plugin: ${input}`);
-            return "";
+            return '';
         } else {
             return `${value}`;
         }
@@ -44,12 +44,11 @@ module.exports = class CosPlugin {
     }
 
     apply(compiler) {
-        compiler.plugin("after-emit", (compilation, callback) => {
-            
+        compiler.plugin('after-emit', (compilation, callback) => {
             let basePath = path.basename(compiler.outputPath);
             let assets = compilation.assets;
             let hash = compilation.hash;
-            let uploadPath = this.options.path || "[hash]";
+            let uploadPath = this.options.path || '[hash]';
             let exclude = isRegExp(this.options.exclude) && this.options.exclude;
             let include = isRegExp(this.options.include) && this.options.include;
             let batch = this.options.batch || 20;
@@ -68,25 +67,25 @@ module.exports = class CosPlugin {
             let uploadedFiles = 0;
 
             // Mark finished
-            let _finish = (err) => {
+            let _finish = err => {
                 spinner.succeed();
                 // eslint-disable-next-line no-console
-                console.log("\n");
+                console.log('\n');
                 callback(err);
             };
 
             // Filter files that should be uploaded
-            filesNames = filesNames.filter((fileName) => {
+            filesNames = filesNames.filter(fileName => {
                 let file = assets[fileName] || {};
 
                 // Ignore unemitted files
                 if (!file.emitted) return false;
 
                 // Check excluced files
-                if (exclude && exclude.test(fileName)) return false;
+                if (exclude && exclude.test(file.existsAt)) return false;
 
                 // Check included files
-                if (include) return include.test(fileName);
+                if (include) return include.test(file.existsAt);
 
                 return true;
             });
@@ -94,16 +93,16 @@ module.exports = class CosPlugin {
             totalFiles = filesNames.length;
 
             // eslint-disable-next-line no-console
-            console.log("\n");
+            console.log('\n');
             let spinner = ora({
                 text: tip(0, totalFiles),
-                color: "green"
+                color: 'green'
             }).start();
 
             // Perform upload to cos
             const performUpload = function(fileName) {
                 let file = assets[fileName] || {};
-                fileName = basePath + "/" + fileName.replace(/\\/g, '/');
+                fileName = basePath + '/' + fileName.replace(/\\/g, '/');
                 let key = path.posix.join(uploadPath, fileName);
 
                 return new Promise((resolve, reject) => {
@@ -132,7 +131,7 @@ module.exports = class CosPlugin {
             const execStack = function(err) {
                 if (err) {
                     // eslint-disable-next-line no-console
-                    console.log("\n");
+                    console.log('\n');
                     return Promise.reject(err);
                 }
 
