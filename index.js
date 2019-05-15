@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require('fs');
 const COS = require("cos-nodejs-sdk-v5");
 const path = require("path");
 const ora = require("ora");
@@ -102,7 +103,7 @@ module.exports = class CosPlugin {
             // Perform upload to cos
             const performUpload = function(fileName) {
                 let file = assets[fileName] || {};
-                fileName = basePath + "/" + fileName;
+                fileName = basePath + "/" + fileName.replace(/\\/g, '/');
                 let key = path.posix.join(uploadPath, fileName);
 
                 return new Promise((resolve, reject) => {
@@ -112,7 +113,8 @@ module.exports = class CosPlugin {
                             Bucket: bucket,
                             Region: region,
                             Key: key,
-                            Body: file.existsAt
+                            Body: fs.createReadStream(file.existsAt),
+                            ContentLength: fs.statSync(file.existsAt).size
                         },
                         function(err, body) {
                             uploadedFiles++;
